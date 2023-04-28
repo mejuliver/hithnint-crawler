@@ -1,0 +1,24 @@
+[
+    { 
+        "name": "amazon", 
+        "domain": "amazon.com", 
+        "enable_ai_checking": false,
+        "search_results": {
+            "parent_el": "[data-component-type=\"s-search_result\"]", 
+            "title": ".s-title-instructions-style h2 a span",
+            "link": ".s-title-instructions-style h2 a[href]",
+            "currency": ".a-price-symbol",
+            "price": ".a-price-whole",
+            "fraction": ".a-price-fraction"
+        },
+        "single_item": {
+            "parent_el": "#dp-container", 
+            "title": "#productTitle",
+            "link": "#",
+            "currency": ".a-price-symbol",
+            "price": ".a-price-whole",
+            "price_fraction": ".a-price-fraction",
+            "thumbnails": "#altImages .imageThumbnail span img"
+        }
+    }
+]
