@@ -26,12 +26,19 @@ class HinthintScrapyServer(BaseHTTPRequestHandler):
 
         url =  fields["url"][0]
 
-        self.crawl(url)
+        with open('url.json', 'w') as outfile:
+            json.dump([url], outfile)
         
-        # for response in self.crawl(url):
-        #     print(response)
-        #     if response["hinthintbot"]:
-        #         query = response["data"]
+        # for response in self.crawl():
+        #     print(response.name)
+            # if response["name"] == "hinthintbot":
+            #     query = response["data"]
+
+        self.crawl()
+
+        f = open('product.json')
+        query = json.load(f)
+        f.close()
 
         reactor.run()
         
@@ -41,11 +48,11 @@ class HinthintScrapyServer(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(query).encode())
 
     @defer.inlineCallbacks
-    def crawl(self,url):
+    def crawl(self):
         process = CrawlerProcess(get_project_settings())
     
         yield process.crawl(proxyDownloaderSpider)
-        yield process.crawl(hinthintbotSpider(url))
+        yield process.crawl(hinthintbotSpider)
         reactor.stop()
 
 if __name__ == "__main__":        

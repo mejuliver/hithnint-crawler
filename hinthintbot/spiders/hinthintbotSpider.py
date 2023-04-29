@@ -3,14 +3,31 @@ from scrapy_selenium import SeleniumRequest
 import json
 from urllib.parse import urlparse
 import os
+
 from pydispatch import dispatcher
   
 class hinthintbotSpider(scrapy.Spider):
     name = 'hinthintbot'
+        
+    def start_requests(self):
 
-    def __init__(self,url="", **kwargs):
-        self.url = url
-        domain = urlparse(url).netloc.replace('www.','')
+        self.url = '';
+        f = open('url.json')
+        url = json.load(f)
+        f.close()
+
+        if len(url) > 0:
+            self.url = url[0]
+            yield SeleniumRequest(
+                url = self.url,
+                wait_time = 30,
+                screenshot = False,
+                callback = self.parse,
+                dont_filter = True
+            )
+  
+    def parse(self, response):
+        domain = urlparse(self.url).netloc.replace('www.','')
         self.domain_settings = False
 
         if os.path.isfile("settings.json"):
@@ -21,23 +38,6 @@ class hinthintbotSpider(scrapy.Spider):
             domain_settings_arr  = list(filter(lambda x:x["domain"]==domain,scrap_sites_settings))
             if len(domain_settings_arr) > 0:
                 self.domain_settings = domain_settings_arr[0]
-
-        super().__init__(**kwargs)
-        
-    def start_requests(self):
-        print(self.domain_settings)
-        print(self.url)
-
-        if self.url != "":
-            yield SeleniumRequest(
-                url = self.url,
-                wait_time = 30,
-                screenshot = False,
-                callback = self.parse,
-                dont_filter = True
-            )
-  
-    def parse(self, response):
         # with open('page.html', 'wb') as html_file:
         #     html_file.write(response.body)
 
@@ -59,5 +59,3 @@ class hinthintbotSpider(scrapy.Spider):
         # store to json
         with open('product.json', 'w') as outfile:
             json.dump(product, outfile)
-
-        return product
