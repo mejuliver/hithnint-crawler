@@ -4,14 +4,12 @@ import json
 from urllib.parse import urlparse
 import os
 
-from pydispatch import dispatcher
+# from pydispatch import dispatcher
   
 class hinthintbotSpider(scrapy.Spider):
     name = 'hinthintbot'
-        
+ 
     def start_requests(self):
-
-        self.url = '';
         f = open('url.json')
         url = json.load(f)
         f.close()
@@ -38,8 +36,9 @@ class hinthintbotSpider(scrapy.Spider):
             domain_settings_arr  = list(filter(lambda x:x["domain"]==domain,scrap_sites_settings))
             if len(domain_settings_arr) > 0:
                 self.domain_settings = domain_settings_arr[0]
-        # with open('page.html', 'wb') as html_file:
-        #     html_file.write(response.body)
+
+        with open('page.html', 'wb') as html_file:
+            html_file.write(response.body)
 
         # scrap product name, price, thumbnails, currency
 
@@ -56,6 +55,6 @@ class hinthintbotSpider(scrapy.Spider):
         product["price_fraction"] = response.css(settings_single["parent_el"]+' '+settings_single["price_fraction"]+'::text').extract_first()
         product["thumbnails"] = response.css(settings_single["parent_el"]+' '+settings_single["thumbnails"]).xpath('@src').getall()
 
-        # store to json
-        with open('product.json', 'w') as outfile:
-            json.dump(product, outfile)
+        # # store to json
+        # with open('product.json', 'w') as outfile:
+        #     json.dump(product, outfile)
